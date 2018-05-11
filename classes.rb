@@ -88,6 +88,8 @@ class Board
         @grid = Array.new(height) {|y| Array.new(width) {|x| Cell.new(x,y)} }
         @height = height
         @width = width
+
+        self.set_all_neighbors
     end
     
     def print_grid
@@ -131,32 +133,18 @@ class Board
 
     def step_forward
         self.compute_next_round
-        puts ""
         self.advance_board
-        self.print_grid
     end
 
     attr_accessor :grid
 end
 
-myBoard = Board.new(5,7)
-myBoard.set_all_neighbors
-# myBoard.grid[0][3].born
-# myBoard.grid[1][3].born
-myBoard.grid[2][3].born
-myBoard.grid[2][2].born
-myBoard.grid[2][1].born
-myBoard.print_grid
-# puts myBoard.grid[2][1].compute_neighborhood
-# puts myBoard.grid[2][2].compute_neighborhood
-# puts myBoard.grid[2][3].compute_neighborhood
-# puts myBoard.grid[1][2].compute_neighborhood
-# puts myBoard.grid[3][2].compute_neighborhood
-myBoard.step_forward
-myBoard.step_forward
-myBoard.step_forward
-myBoard.step_forward
-myBoard.step_forward
+# myBoard = Board.new(5,7)
+# myBoard.set_all_neighbors
+# myBoard.grid[2][3].born
+# myBoard.grid[2][2].born
+# myBoard.grid[2][1].born
+# myBoard.print_grid
 
 
 
