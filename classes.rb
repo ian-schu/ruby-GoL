@@ -1,6 +1,9 @@
+require 'colorize'
+
 class Cell
     def initialize(x,y)
         @alive = false
+        @aliveNext = false
         @x = x
         @y = y
         @neighbors = []
@@ -39,7 +42,7 @@ class Cell
         {x: @x, y:@y}
     end
 
-    def neighbors
+    def printNeighbors
         puts "This cell is at: #{@x},#{@y}"
         puts "Neighbors are:"
         @neighbors.each do |cell|
@@ -47,7 +50,9 @@ class Cell
         end
     end
 
-    attr_accessor :alive
+    def alive?
+        @alive
+    end
 end
 
 class Board
@@ -60,8 +65,8 @@ class Board
     def printGrid
         @grid.each do |row|
             row.each do |cell|
-                if cell.alive 
-                    print "◼︎"
+                if cell.alive?
+                    print "◼︎".colorize(:blue)
                 else 
                     print "◻"
                 end
@@ -85,8 +90,8 @@ end
 
 myBoard = Board.new(5,7)
 myBoard.setAllNeighbors
-myBoard.grid[5][4].born
-myBoard.grid[6][4].born
+myBoard.grid[3][3].born
+myBoard.grid[3][2].born
+myBoard.grid[2][3].born
+myBoard.grid[2][4].born
 myBoard.printGrid
-# myBoard.grid[6][4].setNeighbors(myBoard.grid)
-myBoard.grid[6][4].neighbors
