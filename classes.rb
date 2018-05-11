@@ -1,4 +1,5 @@
 require 'colorize'
+require 'pry'
 
 class Cell
     def initialize(x,y)
@@ -9,7 +10,7 @@ class Cell
         @neighbors = []
     end
 
-    def setNeighbors(grid,width,height)
+    def set_neighbors(grid,width,height)
         x = @x
         y = @y
 
@@ -30,6 +31,33 @@ class Cell
         @neighbors.push(grid[south][east] || nil)
     end
 
+    def compute_neighborhood
+        sum = 0
+        @neighbors.each do |cell|
+            cell.alive? and sum += 1
+        end
+
+        if self.alive? then sum+=1 end
+
+        sum
+    end
+
+    def compute_next
+        neighborhood = self.compute_neighborhood
+        if neighborhood == 3
+            @aliveNext = true
+        elsif neighborhood == 4
+            @aliveNext = @alive.dup
+        else
+            @aliveNext = false
+        end
+    end
+
+    def advance_cell
+        @alive = @aliveNext.dup
+        @aliveNext = false
+    end
+
     def born
         @alive = true
     end
@@ -42,7 +70,7 @@ class Cell
         {x: @x, y:@y}
     end
 
-    def printNeighbors
+    def print_neighbors
         puts "This cell is at: #{@x},#{@y}"
         puts "Neighbors are:"
         @neighbors.each do |cell|
@@ -62,13 +90,13 @@ class Board
         @width = width
     end
     
-    def printGrid
+    def print_grid
         @grid.each do |row|
             row.each do |cell|
                 if cell.alive?
                     print "◼︎".colorize(:blue)
                 else 
-                    print "◻"
+                    print "◼︎".colorize(:white)
                 end
                 print " "
             end
@@ -76,22 +104,59 @@ class Board
         end
     end
 
-    def setAllNeighbors
+    def set_all_neighbors
         @grid.each do |row|
             row.each do |cell|
                 # puts cell.coords
-                cell.setNeighbors(@grid,@width,@height)
+                cell.set_neighbors(@grid,@width,@height)
             end
         end
+    end
+
+    def compute_next_round
+        @grid.each do |row|
+            row.each do |cell|
+                cell.compute_next
+            end
+        end
+    end
+
+    def advance_board
+        @grid.each do |row|
+            row.each do |cell|
+                cell.advance_cell
+            end
+        end
+    end
+
+    def step_forward
+        self.compute_next_round
+        puts ""
+        self.advance_board
+        self.print_grid
     end
 
     attr_accessor :grid
 end
 
 myBoard = Board.new(5,7)
-myBoard.setAllNeighbors
-myBoard.grid[3][3].born
-myBoard.grid[3][2].born
+myBoard.set_all_neighbors
+# myBoard.grid[0][3].born
+# myBoard.grid[1][3].born
 myBoard.grid[2][3].born
-myBoard.grid[2][4].born
-myBoard.printGrid
+myBoard.grid[2][2].born
+myBoard.grid[2][1].born
+myBoard.print_grid
+# puts myBoard.grid[2][1].compute_neighborhood
+# puts myBoard.grid[2][2].compute_neighborhood
+# puts myBoard.grid[2][3].compute_neighborhood
+# puts myBoard.grid[1][2].compute_neighborhood
+# puts myBoard.grid[3][2].compute_neighborhood
+myBoard.step_forward
+myBoard.step_forward
+myBoard.step_forward
+myBoard.step_forward
+myBoard.step_forward
+
+
+
